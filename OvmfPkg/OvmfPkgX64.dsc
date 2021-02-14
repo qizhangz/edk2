@@ -36,6 +36,12 @@
   DEFINE TPM_CONFIG_ENABLE       = FALSE
 
   #
+  # TDX flags
+  #
+  DEFINE TDX_IGNORE_VE_HLT       = FALSE
+  DEFINE TDX_EMULATION_ENABLE    = TRUE
+
+  #
   # Network definition
   #
   DEFINE NETWORK_TLS_ENABLE             = FALSE
@@ -242,6 +248,7 @@
 [LibraryClasses.common]
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   VmgExitLib|OvmfPkg/Library/VmgExitLib/VmgExitLib.inf
+  TdxLib|OvmfPkg/Library/TdxLib/TdxLibNull.inf
 
 [LibraryClasses.common.SEC]
   TimerLib|OvmfPkg/Library/AcpiTimerLib/BaseRomAcpiTimerLib.inf

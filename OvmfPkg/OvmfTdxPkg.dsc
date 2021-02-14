@@ -19,11 +19,11 @@
   PLATFORM_GUID                  = 5a9e7754-d81b-49ea-85ad-69eaa7b1539b
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/Ovmf3264
-  SUPPORTED_ARCHITECTURES        = IA32|X64
+  OUTPUT_DIRECTORY               = Build/OvmfTdx
+  SUPPORTED_ARCHITECTURES        = X64
   BUILD_TARGETS                  = NOOPT|DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = OvmfPkg/OvmfPkgIa32X64.fdf
+  FLASH_DEFINITION               = OvmfPkg/OvmfTdxPkg.fdf
 
   #
   # Defines for default states.  These can be changed on the command line.
@@ -34,6 +34,12 @@
   DEFINE SOURCE_DEBUG_ENABLE     = FALSE
   DEFINE TPM_ENABLE              = FALSE
   DEFINE TPM_CONFIG_ENABLE       = FALSE
+
+  #
+  # TDX flags
+  #
+  DEFINE TDX_IGNORE_VE_HLT       = FALSE
+  DEFINE TDX_EMULATION_ENABLE    = TRUE
 
   #
   # Network definition
@@ -91,6 +97,13 @@
   MSFT:*_*_*_CC_FLAGS = /D DISABLE_NEW_DEPRECATED_INTERFACES
   INTEL:*_*_*_CC_FLAGS = /D DISABLE_NEW_DEPRECATED_INTERFACES
   GCC:*_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
+
+  #
+  # TDX Virtual Firmware
+  #
+  MSFT:*_*_*_CC_FLAGS = /D TDX_VIRTUAL_FIRMWARE
+  INTEL:*_*_*_CC_FLAGS = /D TDX_VIRTUAL_FIRMWARE
+  GCC:*_*_*_CC_FLAGS = -D TDX_VIRTUAL_FIRMWARE
 
 !include NetworkPkg/NetworkBuildOptions.dsc.inc
 
@@ -241,8 +254,8 @@
 
 [LibraryClasses.common]
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-  VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
-  TdxLib|OvmfPkg/Library/TdxLib/TdxLibNull.inf
+  VmgExitLib|OvmfPkg/Library/VmgExitLib/VmgExitLib.inf
+  TdxLib|OvmfPkg/Library/TdxLib/TdxLib.inf
 
 [LibraryClasses.common.SEC]
   TimerLib|OvmfPkg/Library/AcpiTimerLib/BaseRomAcpiTimerLib.inf
@@ -266,6 +279,8 @@
 !else
   CpuExceptionHandlerLib|UefiCpuPkg/Library/CpuExceptionHandlerLib/SecPeiCpuExceptionHandlerLib.inf
 !endif
+  VmgExitLib|OvmfPkg/Library/VmgExitLib/SecVmgExitLib.inf
+  MemEncryptSevLib|OvmfPkg/Library/BaseMemEncryptSevLib/SecMemEncryptSevLib.inf
 
 [LibraryClasses.common.PEI_CORE]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
@@ -464,7 +479,7 @@
 [PcdsFeatureFlag]
   gEfiMdeModulePkgTokenSpaceGuid.PcdHiiOsRuntimeSupport|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSupportUefiDecompress|FALSE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode|TRUE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutGopSupport|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutUgaSupport|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdInstallAcpiSdtProtocol|TRUE
@@ -532,6 +547,9 @@
   #                             // significantly impact boot performance
   # DEBUG_ERROR     0x80000000  // Error
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x8000004F
+!if $(TDX_EMULATION_ENABLE) == FALSE
+  gUefiOvmfPkgTokenSpaceGuid.PcdUseTdxEmulation|0
+!endif
 
 !if $(SOURCE_DEBUG_ENABLE) == TRUE
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x17
@@ -551,7 +569,6 @@
   gEfiSourceLevelDebugPkgTokenSpaceGuid.PcdDebugLoadImageMethod|0x2
 !endif
 
-[PcdsFixedAtBuild.IA32]
   #
   # The NumberOfPages values below are ad-hoc. They are updated sporadically at
   # best (please refer to git-blame for past updates). The values capture a set
@@ -564,7 +581,22 @@
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesCode|0x100
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesData|0x100
 
-[PcdsFixedAtBuild.X64]
+  #
+  # TDX Pcds
+  #
+!if $(TDX_IGNORE_VE_HLT) == TRUE
+  gUefiOvmfPkgTokenSpaceGuid.PcdIgnoreVeHalt|TRUE
+!endif
+  # Noexec settings for DXE.
+  # TDX doesn't allow us to change EFER so make sure these are disabled
+  #gEfiMdeModulePkgTokenSpaceGuid.PcdSetNxForStack|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdImageProtectionPolicy|0x00000000
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDxeNxMemoryProtectionPolicy|0x00000000
+  gEfiMdeModulePkgTokenSpaceGuid.PcdUse1GPageTable|TRUE
+
+  # Set memory encryption mask
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdxPteMemoryEncryptionAddressOrMask|0x0
+
   #
   # Network Pcds
   #
@@ -652,7 +684,6 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 !endif
 
-[PcdsDynamicDefault.X64]
   # IPv4 and IPv6 PXE Boot support.
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|0x01
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|0x01
@@ -668,7 +699,7 @@
 # Components Section - list of all EDK II Modules needed by this Platform.
 #
 ################################################################################
-[Components.IA32]
+[Components]
   OvmfPkg/ResetVector/ResetVector.inf
 
   #
@@ -725,7 +756,6 @@
   }
 !endif
 
-[Components.X64]
   #
   # DXE Phase modules
   #
