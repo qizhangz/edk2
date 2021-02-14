@@ -255,6 +255,7 @@
 [LibraryClasses.common]
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   VmgExitLib|OvmfPkg/Library/VmgExitLib/VmgExitLib.inf
+  VmTdExitLib|OvmfPkg/Library/VmTdExitLib/VmTdExitLib.inf
   TdxLib|OvmfPkg/Library/TdxLib/TdxLib.inf
 
 [LibraryClasses.common.SEC]
