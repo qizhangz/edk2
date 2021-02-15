@@ -5,16 +5,15 @@
 #  where local APIC is disabled.
 #
 #  Copyright (c) 2010 - 2018, Intel Corporation. All rights reserved.<BR>
-#  Copyright (c) 2020, AMD Inc. All rights reserved.<BR>
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = BaseXApicX2ApicLib
+  BASE_NAME                      = BaseXApicX2ApicLibDxe
   MODULE_UNI_FILE                = BaseXApicX2ApicLib.uni
-  FILE_GUID                      = 967B6E05-F10D-4c10-8BF7-365291CA143F
+  FILE_GUID                      = 53DDFFC8-5812-44E2-8994-9542716B61CF
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.1
   LIBRARY_CLASS                  = LocalApicLib
@@ -22,12 +21,12 @@
 #
 # The following information is for reference only and not required by the build tools.
 #
-#  VALID_ARCHITECTURES           = IA32 X64
+#  VALID_ARCHITECTURES           = X64
 #
 
 [Sources]
-  ApicLib.c
   BaseXApicX2ApicLib.c
+  DxeApicLib.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -46,3 +45,8 @@
 [Pcd]
   gUefiCpuPkgTokenSpaceGuid.PcdCpuInitIpiDelayInMicroSeconds  ## SOMETIMES_CONSUMES
   gUefiCpuPkgTokenSpaceGuid.PcdCpuLocalApicBaseAddress        ## SOMETIMES_CONSUMES
+  gUefiOvmfPkgTokenSpaceGuid.PcdUseTdxMsr                     ## CONSUMES
+
+[Protocols]
+  gEfiCpuArchProtocolGuid                       ## CONSUMES
+
