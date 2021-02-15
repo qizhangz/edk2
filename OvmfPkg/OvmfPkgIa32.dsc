@@ -240,6 +240,7 @@
   VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
   TdxLib|OvmfPkg/Library/TdxLib/TdxLibNull.inf
   VmTdExitLib|UefiCpuPkg/Library/VmTdExitLibNull/VmTdExitLibNull.inf
+  TdxStartupLib|OvmfPkg/Library/TdxStartupLib/TdxStartupLibNull.inf
 
 [LibraryClasses.common.SEC]
   TimerLib|OvmfPkg/Library/AcpiTimerLib/BaseRomAcpiTimerLib.inf
