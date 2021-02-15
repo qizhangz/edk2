@@ -7,6 +7,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
 #include "DxeMain.h"
+#include <Library/TdxLib.h>
+
+BOOLEAN gTdGuest = FALSE;
 
 //
 // DXE Core Global Variables for Protocols from PEI
@@ -245,6 +248,13 @@ DxeMain (
   VOID                          *EntryPoint;
 
   //
+  // Check whether it is of Td guest
+  //
+  GuidHob = GetFirstGuidHob(&gUefiOvmfPkgTdxPlatformGuid);
+  gTdGuest = GuidHob != NULL;
+  SetTdGuest(gTdGuest);
+
+  //
   // Setup the default exception handlers
   //
   VectorInfoList = NULL;
@@ -259,6 +269,12 @@ DxeMain (
   // Initialize Debug Agent to support source level debug in DXE phase
   //
   InitializeDebugAgent (DEBUG_AGENT_INIT_DXE_CORE, HobStart, NULL);
+
+  DEBUG((DEBUG_INFO, ">>>> DxeMain <<<<\n"));
+  if(gTdGuest){
+    DEBUG((DEBUG_INFO, "TdGuest\n"));
+	CpuDeadLoop();
+  }
 
   //
   // Initialize Memory Services
