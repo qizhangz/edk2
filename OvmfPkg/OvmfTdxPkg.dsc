@@ -285,6 +285,7 @@
   TdxLib|OvmfPkg/Library/TdxLib/TdxLibSec.inf
   LocalApicLib|UefiCpuPkg/Library/BaseXApicX2ApicLib/BaseXApicX2ApicLibSec.inf
   TdvfPlatformLib|OvmfPkg/Library/TdvfPlatformLibQemu/TdvfPlatformLibQemuSec.inf
+  PrePiLib|OvmfPkg/Library/PrePiLibTdx/PrePiLibTdx.inf
 
 [LibraryClasses.common.PEI_CORE]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
