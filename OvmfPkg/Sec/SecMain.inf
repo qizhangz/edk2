@@ -51,6 +51,8 @@
   ExtractGuidedSectionLib
   LocalApicLib
   CpuExceptionHandlerLib
+  TdxStartupLib
+  TdxLib
 
 [Ppis]
   gEfiTemporaryRamSupportPpiGuid                # PPI ALWAYS_PRODUCED
@@ -70,6 +72,11 @@
   gUefiOvmfPkgTokenSpaceGuid.PcdGuidedExtractHandlerTableSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfDecompressionScratchEnd
   gEfiMdeModulePkgTokenSpaceGuid.PcdInitValueInTempStack
+
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdWorkAreaBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdWorkAreaSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdUseTdxEmulation
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdMailboxBase
 
 [FeaturePcd]
   gUefiOvmfPkgTokenSpaceGuid.PcdSmmSmramRequire
