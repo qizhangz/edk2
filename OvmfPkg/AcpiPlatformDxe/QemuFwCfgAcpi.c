@@ -913,9 +913,14 @@ Process2ndPassCmdAddPointer (
     goto RollbackSeenPointer;
   }
 
+  Status = QemuInstallAcpiTable(AcpiProtocol,
+                           (VOID *)(UINTN)PointerValue, TableSize,
+                           &InstalledKey[*NumInstalled]);
+#if 0
   Status = AcpiProtocol->InstallAcpiTable (AcpiProtocol,
                            (VOID *)(UINTN)PointerValue, TableSize,
                            &InstalledKey[*NumInstalled]);
+#endif
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: InstallAcpiTable(): %r\n", __FUNCTION__,
       Status));

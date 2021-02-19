@@ -381,6 +381,7 @@
 
   ## Hold Mask used for setting or clearing shared TDX pages
   gUefiOvmfPkgTokenSpaceGuid.PcdTdxSharedPageMask|0x0|UINT64|0x100d
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdRelocatedMailboxBase|0|UINT64|0x100e
 
 [PcdsFeatureFlag]
   gUefiOvmfPkgTokenSpaceGuid.PcdQemuBootOrderPciTranslation|TRUE|BOOLEAN|0x1c
