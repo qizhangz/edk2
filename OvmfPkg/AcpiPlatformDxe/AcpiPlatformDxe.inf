@@ -66,6 +66,8 @@
   gUefiCpuPkgTokenSpaceGuid.PcdCpuLocalApicBaseAddress
   gUefiOvmfPkgTokenSpaceGuid.Pcd8259LegacyModeEdgeLevel
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFdBaseAddress
+  gUefiTdvfPkgTokenSpaceGuid.PcdFdBaseAddress
+  gUefiTdvfPkgTokenSpaceGuid.PcdTdRelocatedMailboxBase
 
 [Depex]
   gEfiAcpiTableProtocolGuid
