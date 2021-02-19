@@ -37,3 +37,6 @@
 [LibraryClasses]
   DebugLib
   QemuFwCfgLib
+
+[Guids]
+  gUefiOvmfPkgTdxPlatformGuid

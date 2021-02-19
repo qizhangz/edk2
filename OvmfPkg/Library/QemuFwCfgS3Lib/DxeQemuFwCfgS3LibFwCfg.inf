@@ -39,3 +39,6 @@
 
 [Protocols]
   gEfiS3SaveStateProtocolGuid ## SOMETIMES_CONSUMES
+
+[Guids]
+  gUefiOvmfPkgTdxPlatformGuid

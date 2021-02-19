@@ -9,6 +9,7 @@
 
 #include <Library/QemuFwCfgLib.h>
 #include <Library/QemuFwCfgS3Lib.h>
+#include <Library/TdvfPlatformLib.h>
 
 /**
   Determine if S3 support is explicitly enabled.
@@ -27,16 +28,26 @@ QemuFwCfgS3Enabled (
   VOID
   )
 {
-  RETURN_STATUS        Status;
-  FIRMWARE_CONFIG_ITEM FwCfgItem;
-  UINTN                FwCfgSize;
-  UINT8                SystemStates[6];
+  RETURN_STATUS          Status;
+  FIRMWARE_CONFIG_ITEM   FwCfgItem;
+  UINTN                  FwCfgSize;
+  UINT8                  SystemStates[6];
+  EFI_HOB_GUID_TYPE      *GuidHob;
+  EFI_HOB_PLATFORM_INFO  *PlatformInfoHob;
 
-  Status = QemuFwCfgFindFile ("etc/system-states", &FwCfgItem, &FwCfgSize);
-  if (Status != RETURN_SUCCESS || FwCfgSize != sizeof SystemStates) {
-    return FALSE;
+  GuidHob = GetFirstGuidHob(&gUefiOvmfPkgTdxPlatformGuid);
+  if (GuidHob) {
+    PlatformInfoHob = (EFI_HOB_PLATFORM_INFO *)GET_GUID_HOB_DATA (GuidHob);
+
+    return (BOOLEAN) (PlatformInfoHob->SystemStates[3] & BIT7);
+  } else {
+
+    Status = QemuFwCfgFindFile ("etc/system-states", &FwCfgItem, &FwCfgSize);
+    if (Status != RETURN_SUCCESS || FwCfgSize != sizeof SystemStates) {
+      return FALSE;
+    }
+    QemuFwCfgSelectItem (FwCfgItem);
+    QemuFwCfgReadBytes (sizeof SystemStates, SystemStates);
+    return (BOOLEAN) (SystemStates[3] & BIT7);
   }
-  QemuFwCfgSelectItem (FwCfgItem);
-  QemuFwCfgReadBytes (sizeof SystemStates, SystemStates);
-  return (BOOLEAN) (SystemStates[3] & BIT7);
 }
