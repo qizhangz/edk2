@@ -379,6 +379,9 @@
   #  This PCD is only accessed if PcdSmmSmramRequire is TRUE (see below).
   gUefiOvmfPkgTokenSpaceGuid.PcdQ35SmramAtDefaultSmbase|FALSE|BOOLEAN|0x34
 
+  ## Hold Mask used for setting or clearing shared TDX pages
+  gUefiOvmfPkgTokenSpaceGuid.PcdTdxSharedPageMask|0x0|UINT64|0x100d
+
 [PcdsFeatureFlag]
   gUefiOvmfPkgTokenSpaceGuid.PcdQemuBootOrderPciTranslation|TRUE|BOOLEAN|0x1c
   gUefiOvmfPkgTokenSpaceGuid.PcdQemuBootOrderMmioTranslation|FALSE|BOOLEAN|0x1d
