@@ -1,7 +1,7 @@
 /** @file
 
   The protocol provides support to allocate, free, map and umap a DMA buffer
-  for bus master (e.g PciHostBridge). When SEV is enabled, the DMA operations
+  for bus master (e.g PciHostBridge). When memory encryption is enabled, the DMA operations
   must be performed on unencrypted buffer hence protocol clear the encryption
   bit from the DMA buffer.
 
@@ -21,18 +21,20 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemEncryptSevLib.h>
+#include <Library/MemEncryptTdxLib.h>
+#include <Library/MemEncryptLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 
 /**
   Install IOMMU protocol to provide the DMA support for PciHostBridge and
-  MemEncryptSevLib.
+  MemEncryptLib.
 
 **/
 EFI_STATUS
 EFIAPI
-AmdSevInstallIoMmuProtocol (
-  VOID
+IoMmuInstallIoMmuProtocol (
+  UINTN MemEncryptType
   );
 
 #endif
